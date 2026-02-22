@@ -16,22 +16,29 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.textContent = 'Yuborilmoqda...';
             submitBtn.disabled = true;
 
+            const botToken = '8010371886:AAHLEoDiPwP-UjLRkbNa_srLQrmP8WCVX80';
+            const chatId = '6156910611';
+            const text = `🔔 *Yangi buyurtma!*\n\n👤 *Ismi:* ${name}\n📞 *Tel:* ${phone}\n💬 *Xabar:* ${message}`;
+
             try {
-                const response = await fetch('/api/contact', {
+                const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ name, phone, message }),
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: text,
+                        parse_mode: 'Markdown'
+                    }),
                 });
-
-                const data = await response.json();
 
                 if (response.ok) {
                     alert('Xabar muvaffaqiyatli yuborildi!');
                     contactForm.reset();
                 } else {
-                    alert('Xatolik: ' + (data.error || 'Noma\'lum xatolik'));
+                    const data = await response.json();
+                    alert('Xatolik: ' + (data.description || 'Noma\'lum xatolik'));
                 }
             } catch (error) {
                 console.error('Error:', error);
